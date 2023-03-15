@@ -3,7 +3,7 @@ import { User } from "../../models/User";
 import { Adapters } from "../../types";
 
 export type CreateToDoListResponse = {
-  toDoList: ToDoList;
+  toDoList: ToDoList | null;
 };
 
 export async function createToDoList(

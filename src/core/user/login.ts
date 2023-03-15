@@ -21,7 +21,7 @@ export async function login(
   return {
     user,
     jwtIdentification: {
-      jwtToken: authenticationManager.getJWT(user),
+      jwtToken: `Bearer ${authenticationManager.getJWT(user)}`,
       refreshToken: await authenticationManager.updateRefreshToken(user),
     },
     error: null,

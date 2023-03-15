@@ -10,10 +10,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "mocha",
-    "cucumber-wip": "cucumber-js --tags=@wip",
-    "cucumber": "cucumber-js",
-    "cucumber-http-wip": "cucumber-js  --profile=http --tags=@wip-http"
+    "test": "npm run test:mocha && npm run test:cucumber && npm run test:cucumber:http",
+    "test:mocha": "mocha",
+    "test:cucumber:wip": "cucumber-js --tags=@wip",
+    "test:cucumber": "cucumber-js --tags='not @wip'",
+    "test:cucumber:http:wip": "cucumber-js  --profile=http --tags=@wip-http",
+    "test:cucumber:http": "cucumber-js  --profile=http --tags=@http --tags='not @wip-http'"
   },
   "author": "",
   "license": "MIT",

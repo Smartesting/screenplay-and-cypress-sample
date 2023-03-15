@@ -7,7 +7,7 @@ import {
 import crypto from "crypto";
 
 export class MemoryUsermanager implements IUserManager {
-  private readonly usersByMail = new Map<string, User>();
+  private readonly usersByEmail = new Map<string, User>();
   private readonly passwordByEmail = new Map<string, string>();
 
   async create(
@@ -19,7 +19,7 @@ export class MemoryUsermanager implements IUserManager {
       return { user: null, error: CreateUserError.emailAlreadyUsed };
 
     const user: User = { email };
-    this.usersByMail.set(email, user);
+    this.usersByEmail.set(email, user);
     this.passwordByEmail.set(email, this.hashPassword(password));
 
     return { user, error: null };
@@ -38,8 +38,12 @@ export class MemoryUsermanager implements IUserManager {
     return { error: null, user };
   }
 
+  async getUserByEmail(email: string): Promise<User | null> {
+    return this.usersByEmail.get(email) ?? null;
+  }
+
   private findUserByEmail(email: string): User | undefined {
-    return this.usersByMail.get(email);
+    return this.usersByEmail.get(email);
   }
 
   private checkPassword(email: string, password: string): boolean {

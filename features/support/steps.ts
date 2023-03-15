@@ -13,15 +13,15 @@ Given(
     const password = `${actor.name}-secret`;
     this.adapters.userManager.create(email, password);
 
-    const { user, error } = await actor.attemptsTo(
+    const loginResponse = await actor.attemptsTo(
       this.authenticate(email, password)
     );
-    if (error)
+    if (loginResponse.error)
       throw new Error(
-        `Unable to authenticate ${actor.name}, got error: ${error}`
+        `Unable to authenticate ${actor.name}, got error: ${loginResponse.error}`
       );
 
-    actor.remember("userIdentification", user);
+    actor.remember("userIdentification", this.getAuthentication(loginResponse));
   }
 );
 

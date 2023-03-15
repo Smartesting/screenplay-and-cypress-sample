@@ -25,21 +25,43 @@ export class HttpClient implements IClient<JwtUserIdentification> {
     userIdentification: JwtUserIdentification,
     name: string
   ): Promise<unknown> {
-    return this.fetchJson(`${this.serverUrl}/api/todo-list`, {
-      method: "POST",
-      body: { name },
-    });
+    return this.fetchJsonAuthenticated(
+      userIdentification,
+      `${this.serverUrl}/api/todo-list`,
+      {
+        method: "POST",
+        body: { name },
+      }
+    );
   }
 
   getToDoLists(
     userIdentification: JwtUserIdentification
   ): Promise<GetToDoListsResponse> {
-    return this.fetchJson(`${this.serverUrl}/api/todo-lists`, {
-      method: "GET",
+    return this.fetchJsonAuthenticated(
+      userIdentification,
+      `${this.serverUrl}/api/todo-lists`,
+      {
+        method: "GET",
+      }
+    );
+  }
+
+  private async fetchJsonAuthenticated<T>(
+    userIdentification: JwtUserIdentification,
+    url: string,
+    init: ReqInit
+  ) {
+    return this.fetchJson<T>(url, {
+      ...init,
+      headers: {
+        ...init.headers,
+        Authorization: userIdentification.jwtToken,
+      },
     });
   }
 
-  protected async fetchJson<T>(url: string, init: ReqInit): Promise<T> {
+  private async fetchJson<T>(url: string, init: ReqInit): Promise<T> {
     const body = init.body ? JSON.stringify(init.body) : undefined;
     const response = await fetch(url, {
       ...init,

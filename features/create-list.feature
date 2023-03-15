@@ -1,6 +1,6 @@
 Feature: Create a list
 
-  @wip-http
+  @http
   Scenario: Creating a new todo-list
     Given Harper is authenticated
     When Harper creates a todo-list named "Morning routine"

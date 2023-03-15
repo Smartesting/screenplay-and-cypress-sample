@@ -13,8 +13,11 @@ export interface IUserManager {
     email: string,
     password: string
   ) => Promise<{ user: User | null; error: CreateUserError | null }>;
+
   identify: (
     email: string,
     password: string
   ) => Promise<{ user: User | null; error: IdentifyUserError | null }>;
+
+  getUserByEmail(email: string): Promise<User | null>;
 }

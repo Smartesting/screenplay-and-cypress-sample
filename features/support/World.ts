@@ -21,7 +21,8 @@ import { Authenticate, CreateToDoList, GetToDoLists } from "./tasks/types";
 import fetch from "node-fetch";
 import { startServer } from "../../src/utils/startServer";
 import { makeAdapters } from "../../src/utils/makeAdapters";
-import { streamToString } from "../../src/utils/streamToString";
+import { LoginResponse } from "../../src/core/user/login";
+import assert from "assert";
 
 defineParameterType(ActorParameterType);
 
@@ -32,6 +33,8 @@ export default class World extends ActorWorld {
   public readonly client: IClient<AvailableUserIdentifications>;
   public stops: Stop[] = [];
 
+  public readonly useHttp: boolean;
+
   public authenticate!: Authenticate;
   public createToDoList!: CreateToDoList;
   public getToDoLists!: GetToDoLists;
@@ -39,33 +42,42 @@ export default class World extends ActorWorld {
   constructor(props: IActorWorldOptions) {
     super(props);
 
+    this.useHttp = this.parameters.interactionMode === "http";
     this.adapters = makeAdapters();
 
-    this.client = this.useHttp()
+    this.client = this.useHttp
       ? new HttpClient("http://localhost:1234/")
       : new CoreClient(this.adapters);
   }
 
-  public useHttp() {
-    return this.parameters.interactionMode === "http";
+  public getAuthentication(
+    response: LoginResponse
+  ): AvailableUserIdentifications {
+    if (this.useHttp) {
+      assert(response.jwtIdentification);
+      return response.jwtIdentification;
+    }
+
+    assert(response.user);
+    return response.user;
   }
 }
 
 setWorldConstructor(World);
 
 Before(async function (this: World) {
-  if (this.useHttp()) {
+  if (this.useHttp) {
     const { app, server } = await startServer({
       hostname: "localhost",
       port: "1234",
       adapters: this.adapters,
     });
+
     this.stops.push(async () => {
-      console.log("Shutting down server");
-      await server.close();
+      server.close();
     });
+
     this.stops.push(async () => {
-      console.log("Shutting down app");
       return app.close();
     });
 
@@ -79,5 +91,7 @@ Before(async function (this: World) {
 });
 
 After(async function (this: World) {
-  await Promise.all(this.stops);
+  for (const stop of this.stops) {
+    await stop();
+  }
 });
