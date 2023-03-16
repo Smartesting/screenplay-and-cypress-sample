@@ -45,14 +45,17 @@ describe("create-list.feature", () => {
       },
     };
 
-    const bob = new Actor(world, "bob");
+    const actor = new Actor(world, "bob");
     const datatable = {
       hashes: () => [{ name: "Morning routine" }],
     };
 
-    cy.wrap(isAuthenticated.bind(world)(bob))
-      .wrap(createToDoList.bind(world)(bob, "Plop"))
-      .wrap(listToDoLists.bind(world)(bob))
-      .wrap(assertToDoLists.bind(world)(bob, datatable));
+    cy.wrap(isAuthenticated.bind(world)(actor)).then(() => {
+      cy.wrap(createToDoList.bind(world)(actor, "Morning routine")).then(() => {
+        cy.wrap(listToDoLists.bind(world)(actor)).then(() => {
+          cy.wrap(assertToDoLists.bind(world)(actor, datatable));
+        });
+      });
+    });
   });
 });

@@ -26,6 +26,9 @@ export const ToDoListCreationForm: React.FunctionComponent<{
     client.createToDoList(userIdentification, name).then(() => {});
   }
 
+  if (!userIdentification)
+    return <span>You are not allowed to create a TODO list</span>;
+
   return (
     <form data-testid={ToDoListCreationFormTestIds.COMPONENT} onSubmit={create}>
       <label>
@@ -48,27 +51,16 @@ export const ToDoListCreationForm: React.FunctionComponent<{
 export const createToDoList: CreateToDoList = (userIdentification, name) => {
   return async (actor: Actor<IWorld>) => {
     const { client } = actor.world;
-    const userIdentificationPromise = retryPromise(
-      () =>
-        new Promise<void>((resolve, reject) => {
-          if (actor.recall("userIdentification")) return resolve();
-          reject();
-        }),
-      { timeout: 5000 }
+    const props = {
+      client,
+      userIdentification,
+    };
+    cy.mount(<ToDoListCreationForm {...props} />);
+    cy.get(`[data-testid="${ToDoListCreationFormTestIds.FIELD_NAME}"]`).type(
+      name
     );
-
-    cy.wrap(userIdentificationPromise).then(() => {
-      const props = {
-        client,
-        userIdentification: actor.recall("userIdentification"),
-      };
-      cy.mount(<ToDoListCreationForm {...props} />);
-      cy.get(`[data-testid="${ToDoListCreationFormTestIds.FIELD_NAME}"]`).type(
-        name
-      );
-      cy.get(
-        `[data-testid="${ToDoListCreationFormTestIds.ACTION_CREATE}"]`
-      ).click();
-    });
+    cy.get(
+      `[data-testid="${ToDoListCreationFormTestIds.ACTION_CREATE}"]`
+    ).click();
   };
 };

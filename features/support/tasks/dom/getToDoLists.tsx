@@ -8,7 +8,6 @@ import {
   AvailableUserIdentifications,
 } from "../../../../src/client/IClient";
 import { ToDoList } from "../../../../src/models/ToDoList";
-import { retryPromise } from "../../../../test/helpers/retryPromise";
 
 export enum ToDoListstestIds {
   COMPONENT = "ToDoLists",
@@ -36,8 +35,8 @@ export const ToDoLists: React.FunctionComponent<{
 
   return (
     <ul data-testid={ToDoListstestIds.TODOLISTS}>
-      {toDoLists.map((toDoList) => (
-        <li>{toDoList.name}</li>
+      {toDoLists.map((toDoList, index) => (
+        <li key={`key-${index}`}>{toDoList.name}</li>
       ))}
     </ul>
   );
@@ -45,27 +44,25 @@ export const ToDoLists: React.FunctionComponent<{
 
 export const getToDoLists: GetToDoLists = (userIdentification) => {
   return async (actor: Actor<IWorld>) => {
-    const { client } = actor.world;
-    const userIdentificationPromise = retryPromise(
-      () =>
-        new Promise<void>((resolve, reject) => {
-          if (actor.recall("userIdentification")) return resolve();
-          reject();
-        }),
-      { timeout: 5000 }
-    );
-
-    cy.wrap(userIdentificationPromise).then(() => {
+    return new Promise((resolve) => {
+      const { client } = actor.world;
       const props = {
         client,
-        userIdentification: actor.recall("userIdentification"),
+        userIdentification,
       };
       cy.mount(<ToDoLists {...props} />);
-      cy.get(`[data-testid="${ToDoListstestIds.TODOLISTS}"]`).then(
-        (toDoLists) => {}
-      );
+      cy.get(`[data-testid="${ToDoListstestIds.TODOLISTS}"]`)
+        .children()
+        .then((toDoListsItems) => {
+          const toDoLists: ToDoList[] = [];
+          toDoListsItems.each((_, li) => {
+            toDoLists.push({
+              id: "123",
+              name: li.textContent ?? "",
+            });
+          });
+          resolve({ toDoLists });
+        });
     });
-
-    return [];
   };
 };

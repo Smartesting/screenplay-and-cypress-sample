@@ -6,14 +6,17 @@ export async function isAuthenticated(this: IWorld, actor: Actor<IWorld>) {
   const password = `${actor.name}-secret`;
   this.adapters.userManager.create(email, password);
 
-  const loginResponse = await actor.attemptsTo(
-    this.authenticate(email, password)
-  );
+  return actor
+    .attemptsTo(this.authenticate(email, password))
+    .then((loginResponse) => {
+      if (loginResponse.error)
+        throw new Error(
+          `Unable to authenticate ${actor.name}, got error: ${loginResponse.error}`
+        );
 
-  if (loginResponse.error)
-    throw new Error(
-      `Unable to authenticate ${actor.name}, got error: ${loginResponse.error}`
-    );
-
-  actor.remember("userIdentification", this.getAuthentication(loginResponse));
+      actor.remember(
+        "userIdentification",
+        this.getAuthentication(loginResponse)
+      );
+    });
 }
