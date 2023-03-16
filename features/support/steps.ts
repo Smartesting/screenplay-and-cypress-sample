@@ -1,55 +1,15 @@
-import { DataTable, Given, When, Then } from "@cucumber/cucumber";
-import { Actor } from "@cucumber/screenplay";
-import { ToDoList } from "../../src/models/ToDoList";
-import { JwtUserIdentification } from "../../src/types";
-import World from "./World";
-import assert from "assert";
-import { AvailableUserIdentifications } from "../../src/client/IClient";
+import { Given, When, Then } from "@cucumber/cucumber";
+import { isAuthenticated } from "./steps/core/authentication";
+import {
+  createToDoList,
+  assertToDoLists,
+  listToDoLists,
+} from "./steps/core/toDoLists";
 
-Given(
-  "{actor} is authenticated",
-  async function (this: World, actor: Actor<World>) {
-    const email = `${actor.name}@example.com`;
-    const password = `${actor.name}-secret`;
-    this.adapters.userManager.create(email, password);
+Given("{actor} is authenticated", isAuthenticated);
 
-    const loginResponse = await actor.attemptsTo(
-      this.authenticate(email, password)
-    );
-    if (loginResponse.error)
-      throw new Error(
-        `Unable to authenticate ${actor.name}, got error: ${loginResponse.error}`
-      );
+When("{actor} creates a todo-list named {string}", createToDoList);
 
-    actor.remember("userIdentification", this.getAuthentication(loginResponse));
-  }
-);
+When("{actor} lists his/her todo-lists", listToDoLists);
 
-When(
-  "{actor} creates a todo-list named {string}",
-  async function (this: World, actor: Actor<World>, name: string) {
-    const userIdentification: AvailableUserIdentifications =
-      actor.recall("userIdentification");
-
-    await actor.attemptsTo(this.createToDoList(userIdentification, name));
-    const { toDoLists } = await actor.attemptsTo(
-      this.getToDoLists(userIdentification)
-    );
-
-    actor.remember("toDoLists", toDoLists);
-  }
-);
-
-Then(
-  "{actor} should have the following todo-lists:",
-  function (actor: Actor<World>, dataTable: DataTable) {
-    const toDoLists: ReadonlyArray<ToDoList> = actor.recall("toDoLists");
-
-    const expectedNames = dataTable
-      .hashes()
-      .map((row: { name: string }) => row.name);
-    const toDoListsNames = toDoLists.map((toDoList) => toDoList.name);
-
-    assert.deepStrictEqual(toDoListsNames, expectedNames);
-  }
-);
+Then("{actor} should have the following todo-lists:", assertToDoLists);

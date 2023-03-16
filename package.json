@@ -15,7 +15,8 @@
     "test:cucumber:wip": "cucumber-js --tags=@wip",
     "test:cucumber": "cucumber-js --tags='not @wip'",
     "test:cucumber:http:wip": "cucumber-js  --profile=http --tags=@wip-http",
-    "test:cucumber:http": "cucumber-js  --profile=http --tags=@http --tags='not @wip-http'"
+    "test:cucumber:http": "cucumber-js  --profile=http --tags=@http --tags='not @wip-http'",
+    "test:cypress:component": "cypress open --component --browser electron"
   },
   "author": "",
   "license": "MIT",

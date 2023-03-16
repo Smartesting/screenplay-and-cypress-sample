@@ -23,12 +23,13 @@ import { startServer } from "../../src/utils/startServer";
 import { makeAdapters } from "../../src/utils/makeAdapters";
 import { LoginResponse } from "../../src/core/user/login";
 import assert from "assert";
+import { IWorld } from "./IWorld";
 
 defineParameterType(ActorParameterType);
 
 type Stop = () => Promise<void>;
 
-export default class World extends ActorWorld {
+export default class World extends ActorWorld implements IWorld {
   public readonly adapters: Adapters;
   public readonly client: IClient<AvailableUserIdentifications>;
   public stops: Stop[] = [];

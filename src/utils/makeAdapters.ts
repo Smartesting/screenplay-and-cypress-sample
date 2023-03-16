@@ -3,10 +3,15 @@ import { MemoryToDoListManager } from "../adapters/ToDoLists/MemoryToDoListManag
 import { MemoryUsermanager } from "../adapters/User/MemoryUserManager";
 import { Adapters } from "../types";
 
-export function makeAdapters(): Adapters {
-  return {
+export function makeAdapters(adapters: Partial<Adapters> = {}): Adapters {
+  const defaultAdapters: Adapters = {
     userManager: new MemoryUsermanager(),
     authenticationManager: new MemoryAuthenticationManager(),
     toDoListManager: new MemoryToDoListManager(),
+  };
+
+  return {
+    ...defaultAdapters,
+    ...adapters,
   };
 }

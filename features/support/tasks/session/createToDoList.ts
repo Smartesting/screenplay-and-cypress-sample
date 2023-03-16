@@ -1,9 +1,9 @@
 import { Actor } from "@cucumber/screenplay";
-import World from "../../World";
+import { IWorld } from "../../IWorld";
 import { CreateToDoList } from "../types";
 
 export const createToDoList: CreateToDoList = (userIdentification, name) => {
-  return async (actor: Actor<World>) => {
+  return async (actor: Actor<IWorld>) => {
     return actor.world.client.createToDoList(userIdentification, name);
   };
 };

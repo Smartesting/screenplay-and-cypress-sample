@@ -15,7 +15,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "incremental": true
+    "incremental": true,
+    "types": ["cypress"]
   },
   "include": ["features", "src", "cucumber.js"],
   "exclude": ["node_modules"]
