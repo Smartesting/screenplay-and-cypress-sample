@@ -18,6 +18,6 @@
     "incremental": true,
     "types": ["cypress"]
   },
-  "include": ["features", "src", "cucumber.js"],
+  "include": ["cypress", "features", "src", "cucumber.js"],
   "exclude": ["node_modules"]
 }
