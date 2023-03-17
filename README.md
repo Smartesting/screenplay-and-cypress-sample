@@ -28,6 +28,8 @@ Note: in order to run `test:cypress:e2e`, you need to have a test server running
 - There's a scenario showing a user can create a ToDo list
 - The scenario runs against the core
 - The scenario runs at the HTTP level
+- The scenario runs at the Component level
+- The scenario kinda run at E2E level (kinda... there's no reset between tests so the more the tests are executed the more items are displayed :/ ) 
 
 ## What has to be done
 
