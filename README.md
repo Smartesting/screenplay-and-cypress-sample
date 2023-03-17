@@ -19,7 +19,9 @@ All levels of tests can be executed running `npm test`. Each level has its own t
 - `npm run test:cucumber`: run the tests at core level
 - `npm run test:cucumber:http`: run the tests at `http` level
 - `test:cypress:component`: run test tests at component level (against the `core`, not using `http` layer)
-- `test:cypress:browser`: run test tests like a real user
+- `test:cypress:e2e`: run test tests like a real user
+
+Note: in order to run `test:cypress:e2e`, you need to have a test server running: you can do so by running `npm run start:test`.
 
 ## What's working so far
 
@@ -31,6 +33,7 @@ All levels of tests can be executed running `npm test`. Each level has its own t
 
 - Run the scenario at browser level.
 - Run the scenario at component level using the `http` layer (although, that might not be a hich priority. It would be nice, but if the scenarios run against the real server, then the components will use `http`)
+- Have the assertions to get the CY tests failing for real.
 
 Right now, we do not really execute the scenario, but a rewritten version. Ideally, we should generate the code and not write it manually (otherwise it defeats the point having a single specification file to test the system at multiple levels).
 

@@ -4,10 +4,8 @@ import { Actor } from "@cucumber/screenplay";
 import { LoginResponse } from "../../../../src/core/user/login";
 import { IWorld } from "../../IWorld";
 import { Authenticate } from "../types";
-import {
-  Login,
-  LogintestIds,
-} from "../../../../src/components/Authentication/Login";
+import { Login } from "../../../../src/components/Authentication/Login";
+import { LogintestIds } from "../../../../src/components/Authentication/LogintestIds";
 
 export const authenticate: Authenticate = (email, password) => {
   return async (actor: Actor<IWorld>) => {
@@ -21,10 +19,7 @@ export const authenticate: Authenticate = (email, password) => {
 
       cy.intercept("/users/").as("login");
       cy.mount(<Login client={client} onClientResponse={onLoginResponse} />);
-      cy.get("input").should("have.length", 3);
-      cy.get(`[data-testid="${LogintestIds.FIELD_EMAIL}"]`).type(email);
-      cy.get(`[data-testid="${LogintestIds.FIELD_PASSWORD}"]`).type(password);
-      cy.get(`[data-testid="${LogintestIds.ACTION_LOGIN}"]`).click();
+      cy.login(email, password);
     });
   };
 };

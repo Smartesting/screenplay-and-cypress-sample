@@ -3,10 +3,8 @@ import React from "react";
 import { Actor } from "@cucumber/screenplay";
 import { IWorld } from "../../IWorld";
 import { CreateToDoList } from "../types";
-import {
-  ToDoListCreationForm,
-  ToDoListCreationFormTestIds,
-} from "../../../../src/components/ToDoLists/CreateForm";
+import { ToDoListCreationForm } from "../../../../src/components/ToDoLists/CreateForm";
+import { ToDoListCreationFormTestIds } from "../../../../src/components/ToDoLists/ToDoListCreationFormTestIds";
 
 export const createToDoList: CreateToDoList = (userIdentification, name) => {
   return async (actor: Actor<IWorld>) => {
@@ -16,11 +14,6 @@ export const createToDoList: CreateToDoList = (userIdentification, name) => {
       userIdentification,
     };
     cy.mount(<ToDoListCreationForm {...props} />);
-    cy.get(`[data-testid="${ToDoListCreationFormTestIds.FIELD_NAME}"]`).type(
-      name
-    );
-    cy.get(
-      `[data-testid="${ToDoListCreationFormTestIds.ACTION_CREATE}"]`
-    ).click();
+    cy.createToDoList(name);
   };
 };

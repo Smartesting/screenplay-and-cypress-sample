@@ -2,12 +2,7 @@ import React from "react";
 
 import { IClient, AvailableUserIdentifications } from "../../client/IClient";
 import { ToDoList } from "../../models/ToDoList";
-
-export enum ToDoListstestIds {
-  COMPONENT = "ToDoLists",
-  PLACEHOLDER = "ToDoLists.PlaceHolder",
-  TODOLISTS = "ToDoLists.ToDoLists",
-}
+import { ToDoListsTestIds } from "./ToDoListsTestIds";
 
 export const ToDoLists: React.FunctionComponent<{
   client: IClient<AvailableUserIdentifications>;
@@ -22,13 +17,13 @@ export const ToDoLists: React.FunctionComponent<{
 
   if (toDoLists.length === 0)
     return (
-      <span data-testid={ToDoListstestIds.PLACEHOLDER}>
+      <span data-testid={ToDoListsTestIds.PLACEHOLDER}>
         Loading todolists...
       </span>
     );
 
   return (
-    <ul data-testid={ToDoListstestIds.TODOLISTS}>
+    <ul data-testid={ToDoListsTestIds.TODOLISTS}>
       {toDoLists.map((toDoList, index) => (
         <li key={`key-${index}`}>{toDoList.name}</li>
       ))}

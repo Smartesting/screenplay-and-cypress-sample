@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiResponse } from "next";
 import { IdentifyUserError } from "../../src/adapters/User/IUserManager";
 import { login, LoginResponse } from "../../src/core/user/login";
-import { Adapters, RequestWithAdapters } from "../../src/types";
+import { RequestWithAdapters } from "../../src/types";
 
 export default async function handler(
   req: RequestWithAdapters,

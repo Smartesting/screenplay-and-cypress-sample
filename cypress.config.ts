@@ -1,6 +1,4 @@
 import { defineConfig } from "cypress";
-import { Adapters } from "./src/types";
-import { startServer } from "./src/utils/startServer";
 
 export default defineConfig({
   component: {
@@ -9,20 +7,12 @@ export default defineConfig({
       bundler: "webpack",
     },
     specPattern: "**/*.feature.cy.tsx",
-    setupNodeEvents(on, config) {
-      on("task", {
-        startServer(adapters: Adapters) {
-          return startServer({
-            hostname: "localhost",
-            port: "1234",
-            adapters: adapters,
-          });
-        },
-      });
-    },
+    setupNodeEvents(on, config) {},
   },
 
   e2e: {
+    baseUrl: "http://localhost:3000",
+    specPattern: "**/*.feature.e2e.cy.tsx",
     setupNodeEvents(on, config) {},
   },
 });

@@ -2,13 +2,7 @@ import React from "react";
 
 import { IClient, AvailableUserIdentifications } from "../../client/IClient";
 import { LoginResponse } from "../../core/user/login";
-
-export enum LogintestIds {
-  COMPONENT = "Login",
-  FIELD_EMAIL = "Login.Field.Email",
-  FIELD_PASSWORD = "Login.Field.Password",
-  ACTION_LOGIN = "Login.Action.Login",
-}
+import { LogintestIds } from "./LogintestIds";
 
 export const Login: React.FunctionComponent<{
   client: IClient<AvailableUserIdentifications>;

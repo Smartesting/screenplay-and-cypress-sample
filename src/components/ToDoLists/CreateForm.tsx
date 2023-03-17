@@ -1,12 +1,7 @@
 import React from "react";
 
 import { IClient, AvailableUserIdentifications } from "../../client/IClient";
-
-export enum ToDoListCreationFormTestIds {
-  COMPONENT = "ToDoListCreationForm",
-  FIELD_NAME = "ToDoListCreationForm.Field.Name",
-  ACTION_CREATE = "ToDoListCreationForm.Action.Create",
-}
+import { ToDoListCreationFormTestIds } from "./ToDoListCreationFormTestIds";
 
 export const ToDoListCreationForm: React.FunctionComponent<{
   client: IClient<AvailableUserIdentifications>;
