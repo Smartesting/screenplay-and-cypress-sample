@@ -12,18 +12,49 @@ The idea is to be able to run a single Cucumber scenario at different levels:
 - dom-http: same as previously, except that the components are interacting with the backend using HTTP
 - browser: the full stack runs with NextJS and we interact like a "real" user
 
+## Running the tests
+
+All levels of tests can be executed running `npm test`. Each level has its own target:
+
+- `npm run test:cucumber`: run the tests at core level
+- `npm run test:cucumber:http`: run the tests at `http` level
+- `test:cypress:component`: run test tests at component level (against the `core`, not using `http` layer)
+- `test:cypress:browser`: run test tests like a real user
+
 ## What's working so far
 
 - There's a scenario showing a user can create a ToDo list
 - The scenario runs against the core
 - The scenario runs at the HTTP level
 
-## What's in progress
+## What has to be done
 
-- The scenario "kinda" runs against the components. Kinda for multiple reasons:
-  - it's not really the scenario that is executed, more a test that takes the same steps. In practice, we'll have to parse the feature file using Gherkin and generate the tests from this. That's a bit out of scope for now
-  - the steps are executed in a kind of weird order (not really weird, but the mix between JS Promises and Cypress Promises-like makes this)
+- Run the scenario at browser level.
+- Run the scenario at component level using the `http` layer (although, that might not be a hich priority. It would be nice, but if the scenarios run against the real server, then the components will use `http`)
+
+Right now, we do not really execute the scenario, but a rewritten version. Ideally, we should generate the code and not write it manually (otherwise it defeats the point having a single specification file to test the system at multiple levels).
+
+At the browser level, we could use [badeball/cypress-cucumber-preprocessor](https://github.com/badeball/cypress-cucumber-preprocessor) to handle this. But at component level, [the `file:preprocessor` hook is not available](https://github.com/cypress-io/cypress/issues/21992), so we can not use the same library.
+Another issue (if we were able to use a preprocessor at component test level) is that the same test file can not be used for both component and e2e tests. So we need to duplicate the feature files in any case.
+
+So far, there are two possibilities that could be used to fix the problem:
+
+- have a "test file" for each level (eg: `component.cy.test.tsx` and `e2e.cy.test.ts`) which read the feature files and generate the tests "on the fly".
+- write a script that translates `.feature` file into one or two test files.
 
 ### Limitations
 
-- To ease handling of Promises and the Cypress Promises-like, the steps have to be pretty simple. All that might work is simply waiting for the actor to attempt an action.
+To ease handling of Promises and the Cypress Promises-like, the steps have to be pretty simple. All that might work is simply waiting for the actor to attempt an action.
+For example, this kind of steps works:
+
+```
+async function doSomething(this: World, actor: Actor<World>) {
+  actor
+    .attemptTo(this.doSomething())
+    .then(response => actor.remember('something', response))
+}
+```
+
+As you notice, we do not use `await` but rely on good old `then`. The reason behing it is that both JS Promises and Cypress Promises implements the `then` method (although it's not exactly the same thing).
+
+Using `await` on a Cypress does not really wait for it to be finished (although, to be fully honest, there's been so many trials and errors than the `await` might not have been the real issue. But it works this way :D)

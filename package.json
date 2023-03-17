@@ -10,13 +10,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "npm run test:mocha && npm run test:cucumber && npm run test:cucumber:http",
+    "test": "npm run test:mocha && npm run test:cucumber && npm run test:cucumber:http && npm run test:cypress:component",
     "test:mocha": "mocha",
     "test:cucumber:wip": "cucumber-js --tags=@wip",
     "test:cucumber": "cucumber-js --tags='not @wip'",
     "test:cucumber:http:wip": "cucumber-js  --profile=http --tags=@wip-http",
     "test:cucumber:http": "cucumber-js  --profile=http --tags=@http --tags='not @wip-http'",
-    "test:cypress:component": "cypress open --component --browser electron"
+    "test:cypress:component": "cypress run --component --browser electron",
+    "test:cypress:component:interactive": "cypress open --component --browser electron"
   },
   "author": "",
   "license": "MIT",
